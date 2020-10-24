@@ -8,11 +8,12 @@ const fs = require("fs");
 const express = require("express");
 const bodyParser = require("body-parser");
 var mongoose = require("mongoose");
-//var User = require("./models/users");
+const userRoutes=require('./routes/userroutes');
+var User = require("./models/users");
 const session = require("express-session");
 const MongoDbSession = require("connect-mongodb-session")(session);
 var cors = require("cors");
-const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-emh0k.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`;
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.dec2c.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`;
 var cookieParser = require("cookie-parser");
 //app declaration//
 const app = express();
@@ -44,7 +45,7 @@ app.use((req, res, next) => {
 });
 app.use(
     session({
-        secret: "tradetalkies",
+        secret: "pratyushB",
         saveUninitialized: true,
         store: store,
         cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 },
@@ -52,28 +53,28 @@ app.use(
     })
 );
 
-// app.use((req, res, next) => {
-//     if (!req.session.user) {
-//         return next();
-//     }
-//     User.findById(req.session.user._id)
-//         .then((user) => {
-//             if (!user) {
-//                 return next();
-//             }
-//             req.user = user;
-//             next();
-//         })
-//         .catch((err) => {
-//             throw new Error(err);
-//         });
-// });
+app.use((req, res, next) => {
+    if (!req.session.user) {
+        return next();
+    }
+    User.findById(req.session.user._id)
+        .then((user) => {
+            if (!user) {
+                return next();
+            }
+            req.user = user;
+            next();
+        })
+        .catch((err) => {
+            throw new Error(err);
+        });
+});
 
 app.use((req, res, next) => {
     res.locals.isAuthenticated = req.session.isLoggedIn;
 
     next();
 });
-
+app.use(userRoutes);
 app.listen(port);
 console.log("Server running on port: " + port);

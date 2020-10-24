@@ -1,0 +1,2 @@
+{"message":[{"value":"gangulyprateeek0@gmail.com","msg":"E-mail already exists, try something else.","param":"email","location":"body"}],"level":"error","timestamp":"2020-10-24T05:34:06.100Z"}
+{"message":[{"value":"gangulyprateeek0gmail.com","msg":"Please Enter a valid Email","param":"email","location":"body"}],"level":"error","timestamp":"2020-10-24T05:43:35.857Z"}
