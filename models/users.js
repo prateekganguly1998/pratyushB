@@ -17,6 +17,7 @@ const userSchema = new Schema({
 
     // resetToken:String,
     // resetTokenExpiration:Date
-})
+});
+userSchema.path("name").index({ text: true, unique: false });
 
 module.exports = mongoose.model("User", userSchema);

@@ -9,4 +9,5 @@ const { validator } = require("../middleware/validator");
 
 router.post('/add-user',validator,adminController.addUser);
 router.post('/login',authController.postLogin);
+router.get('/find',adminController.viewAllUsers);
 module.exports=router;

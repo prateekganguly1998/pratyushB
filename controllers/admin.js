@@ -5,6 +5,7 @@ const logger = require("../middleware/logger");
 const bcrypt = require("bcrypt");
 const SALT_WORK_FACTOR = 10;
 const { validationResult } = require("express-validator");
+const users = require('../models/users');
 
 exports.addUser=(req,res,next)=>
 {
@@ -59,3 +60,45 @@ exports.addUser=(req,res,next)=>
  
 }
   
+exports.viewAllUsers=(req,res,next)=>
+{
+    const minSalary=req.query.minSalary;
+    const maxSalary=req.query.maxSalary;
+    const keyword=req.query.keyword;
+    let query=[{ $match :{} }];
+    if(keyword!==undefined)
+    {
+        query=  [{
+            $match: {
+            name: {
+            $regex: keyword,
+            $options: "i"
+            }
+        }
+    }]
+   
+    }
+
+    User.aggregate(query).then(result=>
+        {
+            let newArray=result;
+            if(minSalary&&maxSalary)
+            {
+             newArray =  result.filter(user=>
+                    {
+                        if(user.salary<=maxSalary&&user.salary>=minSalary)
+                        {
+                            return user;
+                        }
+                    })
+            }
+
+            return res.json({users:newArray});
+        }).catch(err=>
+            {
+                console.log(err);
+                logger.error(`Error in handling request`);
+                return res.json({errorMessage:err});
+            })
+
+}
