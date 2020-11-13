@@ -7,10 +7,13 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    designation:{type:String},
     email: {type:String,required:true},
-    typeOfUser:{type:String,required:true},
+    isManager:{type:Boolean,required:true},
     password:{type:String,required:true},
-    createdAt:{type:Date,default:Date.now()}
+    DOJ:{type:Date,default:Date.now()},
+    skills:[{type:String}],
+    salary:{type:Number}
 
     // resetToken:String,
     // resetTokenExpiration:Date

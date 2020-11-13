@@ -42,12 +42,12 @@ exports.addUser=(req,res,next)=>
                 salary:salary,
                 designation:designation,
                 skills:skills,
-               isManager:isManager
+                isManager:isManager
             });
             return user
             .save()
             .then((result) => {
-                res.json({ message: "User signed up" });
+                res.json({ message: "User added to employee database" });
             })
             .catch((err) => {
                 const error = new Error(err);
@@ -59,44 +59,3 @@ exports.addUser=(req,res,next)=>
  
 }
   
-
-exports.postLogin=(req,res,next)=>
-{
-    const email = req.body.email;
-    const password=req.body.password;
-    //console.log(number);
-    // console.log(firebaseToken);
-    User.findOne({ 'email': email })
-        .then((user) => {
-            console.log(user);
-
-            if (!user) {
-                res.status(422);
-                res.json({ errorMessage: "Invalid credentials" });
-            }
-            bcrypt.compare(password, user.password, function (
-                err,
-                result
-            ) {
-                if (result == true) {
-            req.session.isLoggedIn = true;
-            req.session.user = user;
-            console.log(req.session);
-            return req.session.save((err) => {
-                if (err) {
-                    console.log(err);
-                }
-               return res.json({ message: "User logged in", user: user });
-            });
-                } else {
-                   return res.json({errorMessage:`Invalid credentials.`})
-                }
-            });
-           
-        })
-        .catch((err) => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        });
-}

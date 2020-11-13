@@ -21,10 +21,7 @@ const app = express();
 //store is like a collection/table for storing sessions only//
 mongoose.connect(MONGODB_URI);
 
-const store = new MongoDbSession({
-    uri: MONGODB_URI,
-    collection: "sessions",
-});
+
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -43,38 +40,25 @@ app.use((req, res, next) => {
     );
     next();
 });
-app.use(
-    session({
-        secret: "pratyushB",
-        saveUninitialized: true,
-        store: store,
-        cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 },
-        resave: true,
-    })
-);
 
-app.use((req, res, next) => {
-    if (!req.session.user) {
-        return next();
-    }
-    User.findById(req.session.user._id)
-        .then((user) => {
-            if (!user) {
-                return next();
-            }
-            req.user = user;
-            next();
-        })
-        .catch((err) => {
-            throw new Error(err);
-        });
-});
+// app.use((req, res, next) => {
+//     if (!req.session.user) {
+//         return next();
+//     }
+//     User.findById(req.session.user._id)
+//         .then((user) => {
+//             if (!user) {
+//                 return next();
+//             }
+//             req.user = user;
+//             next();
+//         })
+//         .catch((err) => {
+//             throw new Error(err);
+//         });
+// });
 
-app.use((req, res, next) => {
-    res.locals.isAuthenticated = req.session.isLoggedIn;
 
-    next();
-});
 app.use(userRoutes);
 app.listen(port);
 console.log("Server running on port: " + port);
