@@ -6,97 +6,21 @@ const bcrypt = require("bcrypt");
 const SALT_WORK_FACTOR = 10;
 const { validationResult } = require("express-validator");
 
-exports.addUser=(req,res,next)=>
+
+exports.findUserById=(req,res,next)=>
 {
-    const name=req.body.name;
-    const isManager=req.body.isManager;
-    const email=req.body.email;
-    const salary=req.body.salary;
-    const skills=req.body.skills;
-    const designation=req.body.designation;
-    const password=req.body.password;
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        logger.error(errors.array());
-        return res.status(200).json({
-            errorMessage: errors.array()[0].msg,
-            oldInput: {
-                email: email,
-                name: name,
-                isManager:isManager
-            },
-            validationErrors: errors.array(),
-        });
-    }
-    bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-        bcrypt.hash(password, salt, function (err, hash) {
-            if (err) {
-                throw err;
+    const userId=req.params.userId;
+    User.findOne({_id:userId}).then(result=>
+        {
+            if(result)
+            {
+                return res.json({user:result});
             }
-            
-            const user = new User({
-                name: name,
-                email: email,
-                password:hash,
-                DOJ:Date.now(),
-                salary:salary,
-                designation:designation,
-                skills:skills,
-               isManager:isManager
-            });
-            return user
-            .save()
-            .then((result) => {
-                res.json({ message: "User signed up" });
+            return res.json({msg:`No user found by the _id : ${userId}`});
+        }).catch(err=>
+            {
+                console.log(err);
+                logger.error(`Error in finding user by Id : ${userId}`);
+                return res.json({errorMessage:err});
             })
-            .catch((err) => {
-                const error = new Error(err);
-                error.httpStatusCode = 500;
-                return next(error);
-            });
-        });
-    });
- 
-}
-  
-
-exports.postLogin=(req,res,next)=>
-{
-    const email = req.body.email;
-    const password=req.body.password;
-    //console.log(number);
-    // console.log(firebaseToken);
-    User.findOne({ 'email': email })
-        .then((user) => {
-            console.log(user);
-
-            if (!user) {
-                res.status(422);
-                res.json({ errorMessage: "Invalid credentials" });
-            }
-            bcrypt.compare(password, user.password, function (
-                err,
-                result
-            ) {
-                if (result == true) {
-            req.session.isLoggedIn = true;
-            req.session.user = user;
-            console.log(req.session);
-            return req.session.save((err) => {
-                if (err) {
-                    console.log(err);
-                }
-               return res.json({ message: "User logged in", user: user });
-            });
-                } else {
-                   return res.json({errorMessage:`Invalid credentials.`})
-                }
-            });
-           
-        })
-        .catch((err) => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        });
 }

@@ -13,10 +13,12 @@ var User = require("./models/users");
 const session = require("express-session");
 const MongoDbSession = require("connect-mongodb-session")(session);
 var cors = require("cors");
+var multer = require('multer');
+var upload = multer();
 const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.dec2c.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`;
-var cookieParser = require("cookie-parser");
 //app declaration//
 const app = express();
+
 
 //store is like a collection/table for storing sessions only//
 mongoose.connect(MONGODB_URI);
@@ -25,7 +27,7 @@ mongoose.connect(MONGODB_URI);
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cookieParser());
+app.use(upload.array()); 
 app.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }));
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use((req, res, next) => {
