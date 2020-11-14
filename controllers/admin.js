@@ -12,6 +12,7 @@ exports.addUser=(req,res,next)=>
     const name=req.body.name;
     const isManager=req.body.isManager;
     const email=req.body.email;
+    const DOJ=req.body.DOJ;
     const salary=req.body.salary;
     const skills=req.body.skills;
     const designation=req.body.designation;
@@ -39,7 +40,7 @@ exports.addUser=(req,res,next)=>
                 name: name,
                 email: email,
                 password:hash,
-                DOJ:Date.now(),
+                DOJ:DOJ,
                 salary:salary,
                 designation:designation,
                 skills:skills,
@@ -101,4 +102,37 @@ exports.viewAllUsers=(req,res,next)=>
                 return res.json({errorMessage:err});
             })
 
+}
+
+
+exports.updateUser=(req,res,next)=>
+{
+    const userId=req.params.userId;
+    const updatedUserData=req.body.user;
+    
+    User.findOneAndUpdate({_id:userId},updatedUserData,{new:true})
+    .then(result=>
+        {
+            console.log(result);
+            return res.json(result);
+        })
+    .catch(err=>
+        {
+            console.log(err);
+            return res.json({errorMessage:err});
+        })
+}
+
+exports.deleteUser=(req,res,next)=>
+{
+    const userId=req.params.userId;
+    User.remove({_id:userId}).then(result=>
+        {
+            return res.json(result);
+        }).catch(err=>
+            {
+                console.log(err);
+                return res.json({errorMessage:err});
+
+            })
 }
