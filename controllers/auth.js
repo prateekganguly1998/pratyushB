@@ -3,8 +3,7 @@ const User=require('../models/users');
 const async=require('async');
 const logger = require("../middleware/logger");
 const bcrypt = require("bcrypt");
-const SALT_WORK_FACTOR = 10;
-const { validationResult } = require("express-validator");
+const _ = require('lodash');
 
 exports.postLogin=(req,res,next)=>
 {
@@ -14,7 +13,7 @@ exports.postLogin=(req,res,next)=>
     // console.log(firebaseToken);
     User.findOne({ 'email': email })
         .then((user) => {
-            console.log(user);
+           // console.log(user);
 
             if (!user) {
                 res.status(422);
@@ -25,8 +24,9 @@ exports.postLogin=(req,res,next)=>
                 result
             ) {
                 if (result == true) {
-        
-               return res.json({ message: "User logged in", user: user });
+                  let _user={...user['_doc']};
+                  delete _user.password;
+               return res.json({ message: "User logged in", user: _user });
             
                 } else {
                    return res.json({errorMessage:`Invalid credentials.`})
