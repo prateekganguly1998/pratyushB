@@ -82,7 +82,15 @@ exports.viewAllUsers=(req,res,next)=>
 
     User.aggregate(query).then(result=>
         {
-            let newArray=result;
+            function omit(obj, props) {
+                props = props instanceof Array ? props : [props]
+                return eval(`(({${props.join(',')}, ...o}) => o)(obj)`)
+              }
+            let newArray=result.map(user=>
+                {
+                    delete user.password;
+                    return user;
+                });
             if(minSalary&&maxSalary)
             {
              newArray =  result.filter(user=>
@@ -110,7 +118,7 @@ exports.updateUser=(req,res,next)=>
     const userId=req.params.userId;
     const updatedUserData=req.body.user;
     
-    User.findOneAndUpdate({_id:userId},updatedUserData,{new:true})
+    User.findOneAndUpdate({_id:userId},{$set:updatedUserData},{new:true,projection:{"password":0}})
     .then(result=>
         {
             console.log(result);
@@ -125,7 +133,7 @@ exports.updateUser=(req,res,next)=>
 
 exports.deleteUser=(req,res,next)=>
 {
-    const userId=req.params.userId;
+    const userId=req.body.userId;
     User.remove({_id:userId}).then(result=>
         {
             return res.json(result);

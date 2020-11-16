@@ -12,5 +12,5 @@ router.post('/login',authController.postLogin);
 router.get('/findMany',adminController.viewAllUsers);
 router.get('/user/:userId',userController.findUserById);
 router.post('/update-user/:userId',adminController.updateUser);
-router.post('/delete-user/:userId',adminController.deleteUser);
+router.post('/delete-user',adminController.deleteUser);
 module.exports=router;
