@@ -1,3 +1,11 @@
 {"message":[{"value":"gangulyprateeek0@gmail.com","msg":"E-mail already exists, try something else.","param":"email","location":"body"}],"level":"error","timestamp":"2020-10-24T05:34:06.101Z"}
 {"message":[{"value":"gangulyprateeek0gmail.com","msg":"Please Enter a valid Email","param":"email","location":"body"}],"level":"error","timestamp":"2020-10-24T05:43:35.857Z"}
 {"message":[{"value":"gangulyprateeek0@gmail.com","msg":"E-mail already exists, try something else.","param":"email","location":"body"}],"level":"error","timestamp":"2020-11-13T13:04:35.993Z"}
+{"message":"Error in handling request","level":"error","timestamp":"2020-11-19T07:09:53.548Z"}
+{"message":"Error in handling request","level":"error","timestamp":"2020-11-19T07:10:39.250Z"}
+{"message":"Error in handling request","level":"error","timestamp":"2020-11-19T07:11:08.728Z"}
+{"message":"Error in handling request","level":"error","timestamp":"2020-11-19T07:12:01.392Z"}
+{"message":"Error in handling request","level":"error","timestamp":"2020-11-19T07:12:33.810Z"}
+{"message":"Error in handling request","level":"error","timestamp":"2020-11-19T07:12:57.031Z"}
+{"message":"Error in handling request","level":"error","timestamp":"2020-11-19T07:13:37.183Z"}
+{"message":"Error in handling request","level":"error","timestamp":"2020-11-19T07:13:57.749Z"}

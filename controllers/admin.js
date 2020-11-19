@@ -63,9 +63,12 @@ exports.addUser=(req,res,next)=>
   
 exports.viewAllUsers=(req,res,next)=>
 {
-    const minSalary=req.query.minSalary;
-    const maxSalary=req.query.maxSalary;
-    const keyword=req.query.keyword;
+    const minSalary=req.body.minSalary;
+    const maxSalary=req.body.maxSalary;
+    const keyword=req.body.keyword;
+    const skillSearch=req.body.skillSearch;
+    const DOJ=req.body.DOJ;
+    const designation=req.body.designation;
     let query=[{ $match :{} }];
     if(keyword!==undefined)
     {
@@ -82,10 +85,7 @@ exports.viewAllUsers=(req,res,next)=>
 
     User.aggregate(query).then(result=>
         {
-            function omit(obj, props) {
-                props = props instanceof Array ? props : [props]
-                return eval(`(({${props.join(',')}, ...o}) => o)(obj)`)
-              }
+           
             let newArray=result.map(user=>
                 {
                     delete user.password;
@@ -101,8 +101,46 @@ exports.viewAllUsers=(req,res,next)=>
                         }
                     })
             }
+            let userswithSkills=newArray;
+            if(skillSearch)
+            {
+               userswithSkills= newArray.map(user=>
+                    {
+                        if(user.skills.some(r=> skillSearch.indexOf(r) >= 0))
+                        {
+                            //console.log(user);
+                            return user;
+                        }
+                    })
+            }
+            let userswithDesignation=userswithSkills.filter(function(user)
+            {
+                return user!=null;
+            });
+            if(designation)
+            {
+                
+                userswithDesignation=userswithSkills.map(user=>
+                    {
+                       
+                        if(user!==undefined&&user!==null&&user.designation.toLowerCase()===designation.toLowerCase())
+                        {
+                            return user;
+                        }
+                    })                
+            }
+                   
 
-            return res.json({users:newArray});
+
+
+            let filteredUsers=userswithDesignation.filter(function(user)
+            {
+                return user!=null;
+            })
+
+
+
+            return res.json({users:filteredUsers});
         }).catch(err=>
             {
                 console.log(err);
