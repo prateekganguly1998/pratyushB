@@ -102,7 +102,7 @@ exports.viewAllUsers=(req,res,next)=>
                     })
             }
             let userswithSkills=newArray;
-            if(skillSearch)
+            if(skillSearch&&skillSearch.length>0)
             {
                userswithSkills= newArray.map(user=>
                     {
@@ -138,7 +138,7 @@ exports.viewAllUsers=(req,res,next)=>
                 return user!=null;
             })
 
-
+            console.log(filteredUsers);
 
             return res.json({users:filteredUsers});
         }).catch(err=>
