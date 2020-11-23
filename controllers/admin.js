@@ -154,19 +154,33 @@ exports.viewAllUsers=(req,res,next)=>
 exports.updateUser=(req,res,next)=>
 {
     const userId=req.params.userId;
-    const updatedUserData=req.body.user;
+    let updatedUserData=req.body.user;
+    if(updatedUserData.password)
+    {
+        bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+            bcrypt.hash(updatedUserData.password, salt, function (err, hash) {
+                if (err) {
+                    throw err;
+                }
+                updatedUserData.password=hash;
+                console.log(updatedUserData);
+                User.findOneAndUpdate({_id:userId},{$set:updatedUserData},{new:true,projection:{"password":0}})
+                .then(result=>
+                    {
+                        console.log(result);
+                        return res.json(result);
+                    })
+                .catch(err=>
+                    {
+                        console.log(err);
+                        return res.json({errorMessage:err});
+                    })
+            });
+        });
+    }
     
-    User.findOneAndUpdate({_id:userId},{$set:updatedUserData},{new:true,projection:{"password":0}})
-    .then(result=>
-        {
-            console.log(result);
-            return res.json(result);
-        })
-    .catch(err=>
-        {
-            console.log(err);
-            return res.json({errorMessage:err});
-        })
+    
+    
 }
 
 exports.deleteUser=(req,res,next)=>

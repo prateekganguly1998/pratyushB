@@ -7,7 +7,7 @@ const logger = require("../middleware/logger");
 exports.findUserById=(req,res,next)=>
 {
     const userId=req.params.userId;
-    User.findOne({_id:userId}).select('-password').then(result=>
+    User.findOne({_id:userId}).then(result=>
         {
             if(result)
             {
